@@ -84,13 +84,10 @@ def swipe_down(board):
 def get_score_by_board(board, new_board, action):
     score = get_score_for_highest_number_in_right_lower_corner(new_board)
     core = score + get_score_for_empty_cells(board, new_board)
-    #score = score + get_score_for_no_of_merges(board, action)
+    score = score + get_score_for_no_of_merges(board, action)
     return score
 
 
-#def get_score_for_highest_number_in_right_lower_corner(board):
-#    max_number_in_board = np.max(board)
-#    return MaxScore if board[-1][-1] == max_number_in_board else NullScore
 
 def get_score_for_highest_number_in_right_lower_corner(board):
     score = 0
