@@ -22,9 +22,7 @@ def find_best_move(board):
 
     print('ausgangslage:', board)
     
-    return get_best_move(board, depth)
-    
-    
+    return get_best_move(board, depth) 
     
 def get_best_move(board, depth):
     result = [score_toplevel_move(i, board, depth) for i in range(len(move_args))]
@@ -46,17 +44,7 @@ def score_toplevel_move(move, board, depth):
     if board_equals(board,newboard):
         return 0
     
-    
-    return calculate_max(board, newboard, depth)
-	# TODO:
-	# Implement the Expectimax Algorithm.
-	# 1.) Start the recursion until it reach a certain depth
-	# 2.) When you don't reach the last depth, get all possible board states and 
-	#		calculate their scores dependence of the probability this will occur. (recursively)
-	# 3.) When you reach the leaf calculate the board score with your heuristic.
-
-def calculate_max(board, newBoard, depth):  
-    return calculate_experience_value(board, newBoard, depth)  
+    return calculate_experience_value(board, newboard, depth)
 
 def calculate_experience_value(board, newBoard, depth):
     probability_of_two = 0.9;
