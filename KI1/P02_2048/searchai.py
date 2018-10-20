@@ -11,31 +11,29 @@ import numpy as np
 MaxScore, HighScore, MiddleScore, MinScore, NullScore = 4, 3, 2, 1, 0
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 move_args = [UP,DOWN,LEFT,RIGHT]
-recursion_max_depth = 2
+recursion_max_depth = 3
 
 
 def find_best_move(board):
+    print('anfang')
     """
     find the best move for the next turn.
     """
     depth = 1
-
-    print('ausgangslage:', board)
     
     return get_best_move(board, depth) 
     
 def get_best_move(board, depth):
-    result = [score_toplevel_move(i, board, depth) for i in range(len(move_args))]
+    result = get_score_for_all_movements(board, depth)
     
     bestmove = result.index(max(result))
     
-    for m in move_args:
-        print(m)
-        print(result[m])
-    
     return bestmove
 
-def score_toplevel_move(move, board, depth):
+def get_score_for_all_movements(board, depth):
+    return [move_and_score(i, board, depth) for i in range(len(move_args))]
+
+def move_and_score(move, board, depth):
     """
     Entry Point to score the first move.
     """
@@ -44,28 +42,41 @@ def score_toplevel_move(move, board, depth):
     if board_equals(board,newboard):
         return 0
     
-    return calculate_experience_value(board, newboard, depth)
+    return calculate_board_score(board, newboard, depth)
 
-def calculate_experience_value(board, newBoard, depth):
+def calculate_board_score(prev_board, new_board, depth):
+    score_of_new_board = get_points_for_new_board(prev_board, new_board)
+    
+    if (depth <= recursion_max_depth):
+        return calculate_experience_value_and_next_move(new_board, depth+1) + score_of_new_board    
+    else:
+        return score_of_new_board
+    
+def calculate_experience_value_and_next_move(newBoard, depth):
     probability_of_two = 0.9;
     probability_of_four = 0.1;
+    
     experience_value = 0
     zeros_in_board = newBoard.size - np.count_nonzero(newBoard)
     
     for i in range(0, 4):
         for j in range(0, 4):
             if newBoard[i][j] == 0:
-                modifiedNewBoard = newBoard.copy()
-                modifiedNewBoard[i][j] = 2
-                
-                scoreForNewTwo = probability_of_two * (1/zeros_in_board) * calculate_score_next_max(board, modifiedNewBoard, depth)
+                modifiedNewBoard = newBoard.copy()         
+                modifiedNewBoard[i][j] = 2   
+                best_score_for_all_movement = max(get_score_for_all_movements(modifiedNewBoard, depth))   
+                scoreForNewTwo = probability_of_two * (1/zeros_in_board) * best_score_for_all_movement
                 experience_value += scoreForNewTwo
-                
+  
+                #modifiedNewBoard = newBoard.copy()              
                 #modifiedNewBoard[i][j] = 4
-                #scoreForNewFour = probability_of_four * (1/zeros_in_board) * calculate_score_next_max(board, modifiedNewBoard, depth)
+                #best_score_for_all_movement = max(get_score_for_all_movements(modifiedNewBoard, depth))   
+                #scoreForNewFour = probability_of_four * (1/zeros_in_board) * best_score_for_all_movement
                 #experience_value += scoreForNewFour
 
     return experience_value
+
+
 
 def calculate_score_next_max(board, new_board, depth):  
     if (depth == recursion_max_depth): 
@@ -93,38 +104,24 @@ def get_score_for_highest_number_in_right_lower_corner(board):
 
     return score
 
-def get_points_for_new_board(board, new_board):
-    max_number_in_board = np.max(board)
-    potential_max_number_in_new_board = max_number_in_board*2
-    
-    current_number = 2
-    score = 0;
-    
-    #print('score', score)
-    #print('board', board)
-    #print('new_board', new_board)
-
-    
-    while current_number <= potential_max_number_in_new_board:
-        #print(current_number)
-        #print(potential_max_number_in_new_board)
-      
-        occurence_of_current_number_in_board = np.count_nonzero(board == current_number)
+def get_points_for_new_board(prev_board, new_board):
+    max_number_in_new_board = np.max(new_board)
         
+    current_number = 2
+    points = 0;
+
+    while current_number <= max_number_in_new_board:      
+        occurence_of_current_number_in_prev_board = np.count_nonzero(prev_board == current_number)   
         occurence_of_current_number_in_new_board = np.count_nonzero(new_board == current_number)
 
-        if occurence_of_current_number_in_new_board > occurence_of_current_number_in_board:
-            more = occurence_of_current_number_in_new_board - occurence_of_current_number_in_board
-            #print('more', more)
+        if occurence_of_current_number_in_new_board > occurence_of_current_number_in_prev_board:
+            factor = occurence_of_current_number_in_new_board - occurence_of_current_number_in_prev_board
 
-            score += current_number * more
-            #print('score2', score)
-
+            points += current_number * factor
             
         current_number = current_number * 2
         
-    #print('score', score)
-    return score
+    return points
     
     
 def get_score_for_empty_cells(board, new_board):
