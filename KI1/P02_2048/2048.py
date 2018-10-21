@@ -58,13 +58,13 @@ def play_game(gamectrl):
         move = find_best_move(board)
         if move < 0:
             break
-        print("%010.6f: Score %d, Move %d: %s" % (time.time() - start, gamectrl.get_score(), moveno, movename(move)))
+        #print("%010.6f: Score %d, Move %d: %s" % (time.time() - start, gamectrl.get_score(), moveno, movename(move)))
         gamectrl.execute_move(move)
 
     score = gamectrl.get_score()
     board = gamectrl.get_board()
     maxval = max(max(row) for row in to_val(board))
-    print("Game over. Final score %d; highest tile %d." % (score, maxval))
+    print("Game over. Game took %010.6f. Final score %d; highest tile %d." % (time.time() - start, score, maxval))
 
 def parse_args(argv):
     import argparse
@@ -100,10 +100,13 @@ def main(argv):
         from gamectrl import Hybrid2048Control
         gamectrl = Hybrid2048Control(ctrl)
 
-    if gamectrl.get_status() == 'ended':
-        gamectrl.restart_game()
+    gamecounter = 0
+    while gamecounter < 10:    
+        if gamectrl.get_status() == 'ended':
+            gamectrl.restart_game()
+        play_game(gamectrl)
 
-    play_game(gamectrl)
+    input("Click something to exit")
 
 if __name__ == '__main__':
     import sys
