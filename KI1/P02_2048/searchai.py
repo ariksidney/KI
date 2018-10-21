@@ -12,10 +12,9 @@ MaxScore, HighScore, MiddleScore, MinScore, NullScore = 4, 3, 2, 1, 0
 UP, DOWN, LEFT, RIGHT = 0, 1, 2, 3
 move_args = [UP,DOWN,LEFT,RIGHT]
 recursion_max_depth = 3
-
+number_of_cells_in_board = 16
 
 def find_best_move(board):
-    print('anfang')
     """
     find the best move for the next turn.
     """
@@ -48,7 +47,12 @@ def calculate_board_score(prev_board, new_board, depth):
     score_of_new_board = get_points_for_new_board(prev_board, new_board)
     
     if (depth <= recursion_max_depth):
-        return calculate_experience_value_and_next_move(new_board, depth+1) + score_of_new_board    
+        zeros_in_new_board = new_board.size - np.count_nonzero(new_board)
+             
+        if zeros_in_new_board <= (number_of_cells_in_board / 4):
+            return calculate_experience_value_and_next_move(new_board, depth+1) + score_of_new_board    
+
+        return calculate_experience_value_and_next_move(new_board, depth+2) + score_of_new_board    
     else:
         return score_of_new_board
     
@@ -68,11 +72,11 @@ def calculate_experience_value_and_next_move(newBoard, depth):
                 scoreForNewTwo = probability_of_two * (1/zeros_in_board) * best_score_for_all_movement
                 experience_value += scoreForNewTwo
   
-                #modifiedNewBoard = newBoard.copy()              
-                #modifiedNewBoard[i][j] = 4
-                #best_score_for_all_movement = max(get_score_for_all_movements(modifiedNewBoard, depth))   
-                #scoreForNewFour = probability_of_four * (1/zeros_in_board) * best_score_for_all_movement
-                #experience_value += scoreForNewFour
+                modifiedNewBoard = newBoard.copy()              
+                modifiedNewBoard[i][j] = 4
+                best_score_for_all_movement = max(get_score_for_all_movements(modifiedNewBoard, depth))   
+                scoreForNewFour = probability_of_four * (1/zeros_in_board) * best_score_for_all_movement
+                experience_value += scoreForNewFour
 
     return experience_value
 
