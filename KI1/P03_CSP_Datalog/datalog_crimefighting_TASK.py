@@ -22,14 +22,16 @@ pyDatalog.create_terms('knows','has_link','many_more_needed')
 pyDatalog.clear()
 
 # First treat calls simply as social links (denoted knows), which have no date
-for i in range(0,50):
+for i in range(0,len(calls)):
     +knows(calls.iloc[i,1], calls.iloc[i,2])
 
 
 
 # Task 1: Knowing someone is a bi-directional relationship -> define the predicate accordingly
+pyDatalog.create_terms('X', 'Y', 'Z')
 
-
+#If Y knows X, than X also knows Y
+knows(X, Y) <= knows(Y, X)
 
 
 # Task 2: Define the predicate has_link in a way that it is true if there exists some connection (path of people knowing the next link) in the social graph
