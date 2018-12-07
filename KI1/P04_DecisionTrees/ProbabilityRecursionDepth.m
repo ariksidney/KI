@@ -4,7 +4,7 @@ x = linspace(1,20,20);
 yGini = yGiniBest();
 yEntropy = yEntropyBest();
 yAdaBoostedGini = yAdaBoostedGiniBest();
-yAdaBoostedEntropy = yAdaBoostedEntropy();
+yAdaBoostedEntropy = yAdaBoostedEntropyBest();
 
 %% figure
 figure();
