@@ -190,5 +190,8 @@ pip-selfcheck.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-
-# End of https://www.gitignore.io/api/emacs,python,jupyternotebook,visualstudiocode
+KI2/lab02/trained_classifier_prediction.pkl
+KI2/lab02/trained_classifier.pkl
+KI2/lab02/X.pkl
+KI2/lab02/Y.pkl
+KI2/lab02/train_data
